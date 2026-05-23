@@ -1,0 +1,33 @@
+# ===== GIT =====
+.git
+.gitignore
+
+# ===== IDE =====
+.idea
+*.iml
+.vscode
+*.classpath
+*.project
+*.settings
+
+# ===== MAVEN =====
+target/
+!target/*.jar
+
+# ===== AMBIENTE =====
+.env
+.env.*
+!.env.example
+
+# ===== DOCKER =====
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# ===== SISTEMA =====
+**/*.log
+**/.DS_Store
+**/Thumbs.db
+
+# ===== TESTES =====
+src/test/
