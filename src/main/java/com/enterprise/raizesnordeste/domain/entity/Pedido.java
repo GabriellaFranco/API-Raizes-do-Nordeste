@@ -1,6 +1,7 @@
 package com.enterprise.raizesnordeste.domain.entity;
 
 import com.enterprise.raizesnordeste.domain.enuns.CanalPedido;
+import com.enterprise.raizesnordeste.domain.enuns.MeioPagamento;
 import com.enterprise.raizesnordeste.domain.enuns.StatusPedido;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,8 +47,15 @@ public class Pedido extends AuditableEntity {
     @Column(name = "valor_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal;
 
-    @Column(name = "meio_pagamento", length = 50)
-    private String meioPagamento;
+    @Column(name = "pontos_utilizados")
+    private Integer pontosUtilizados;
+
+    @Column(name = "desconto_pontos", precision = 10, scale = 2)
+    private BigDecimal descontoPontos;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "meio_pagamento", nullable = false, length = 20)
+    private MeioPagamento meioPagamento;
 
     @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default

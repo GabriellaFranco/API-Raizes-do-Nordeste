@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CardapioRepository extends JpaRepository<Cardapio, Long>, JpaSpecificationExecutor<Cardapio> {
 
-    Optional<Cardapio> findByUnidadeIdAndStatusTrue(Long unidadeId);
+    Optional<Cardapio> findByUnidadeIdAndAtivoTrue(Long unidadeId);
     List<Cardapio> findAllByUnidadeId(Long unidadeId);
-    boolean existsByUnidadeIdAndStatusTrue(Long unidadeId);
+    boolean existsByUnidadeIdAndAtivoTrue(Long unidadeId);
 }

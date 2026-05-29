@@ -12,7 +12,7 @@ import org.hibernate.envers.Audited;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_estoque")
-public class Estoque {
+public class Estoque extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

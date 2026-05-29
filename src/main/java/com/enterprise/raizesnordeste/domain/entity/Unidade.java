@@ -1,9 +1,12 @@
 package com.enterprise.raizesnordeste.domain.entity;
 
+import com.enterprise.raizesnordeste.domain.enuns.Estado;
+import com.enterprise.raizesnordeste.domain.enuns.Regiao;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 @Builder
 @Audited
@@ -31,8 +34,12 @@ public class Unidade extends AuditableEntity {
     @Column(nullable = false, length = 100)
     private String contato;
 
-    @Column(nullable = false, length = 100)
-    private String regiao;
+    @NotNull(message = "Estado é obrigatório")
+    Estado estado;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Regiao regiao;
 
     @Column(nullable = false)
     @Builder.Default

@@ -3,7 +3,7 @@ package com.enterprise.raizesnordeste.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

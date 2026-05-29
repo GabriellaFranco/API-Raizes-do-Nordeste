@@ -22,4 +22,7 @@ public class PerfilAutoridade extends AuditableEntity {
 
     @Column(length = 200)
     private String descricao;
+
+    @Builder.Default
+    boolean status = true;
 }
