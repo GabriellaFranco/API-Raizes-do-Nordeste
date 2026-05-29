@@ -1,9 +1,10 @@
 package com.enterprise.raizesnordeste.domain.entity;
 
+import com.enterprise.raizesnordeste.domain.enuns.CategoriaItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
 
@@ -30,8 +31,9 @@ public class Item extends AuditableEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
-    @Column(nullable = false, length = 100)
-    private String categoria;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CategoriaItem categoria;
 
     @Column(nullable = false)
     @Builder.Default

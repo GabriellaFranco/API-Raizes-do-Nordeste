@@ -3,7 +3,7 @@ package com.enterprise.raizesnordeste.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
 
@@ -27,7 +27,7 @@ public class ItemPedido extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_item", nullable = false)
-    private Item item;
+    private ItemCardapio itemCardapio;
 
     @Column(nullable = false)
     private Integer quantidade;

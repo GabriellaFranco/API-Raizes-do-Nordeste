@@ -3,7 +3,7 @@ package com.enterprise.raizesnordeste.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_cardapio")
-public class Cardapio {
+public class Cardapio extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
