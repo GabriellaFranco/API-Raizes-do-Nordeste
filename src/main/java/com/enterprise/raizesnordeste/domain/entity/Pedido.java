@@ -5,6 +5,7 @@ import com.enterprise.raizesnordeste.domain.enuns.MeioPagamento;
 import com.enterprise.raizesnordeste.domain.enuns.StatusPedido;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.Audited;
 import org.springframework.lang.Nullable;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Audited
 @Getter
 @Setter
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

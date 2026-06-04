@@ -19,7 +19,7 @@ public class MovimentacaoEstoqueMapper {
                 .build();
     }
 
-    public MovimentacaoEstoqueResponseDTO toResponse(MovimentacaoEstoque movimentacao) {
+    public MovimentacaoEstoqueResponseDTO toMovimentacaoEstoqueResponseDTO(MovimentacaoEstoque movimentacao) {
         return MovimentacaoEstoqueResponseDTO.builder()
                 .id(movimentacao.getId())
                 .idEstoque(movimentacao.getEstoque().getId())

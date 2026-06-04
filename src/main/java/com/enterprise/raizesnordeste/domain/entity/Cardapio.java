@@ -2,6 +2,7 @@ package com.enterprise.raizesnordeste.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.Audited;
 import jakarta.persistence.Id;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Audited
 @Getter
 @Setter
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record ItemCardapioRequest(
+public record ItemCardapioRequestDTO(
 
         @NotNull(message = "O item é obrigatório")
         Long idItem,

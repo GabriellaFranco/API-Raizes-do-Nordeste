@@ -2,6 +2,7 @@ package com.enterprise.raizesnordeste.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.Audited;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Builder
 @Audited
 @Getter @Setter
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

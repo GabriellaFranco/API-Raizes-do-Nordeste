@@ -1,6 +1,7 @@
 package com.enterprise.raizesnordeste.domain.mapper;
 
 import com.enterprise.raizesnordeste.domain.dto.request.ClienteRequestDTO;
+import com.enterprise.raizesnordeste.domain.dto.request.RegistroRequestDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ClienteResponseDTO;
 import com.enterprise.raizesnordeste.domain.entity.Cliente;
 import com.enterprise.raizesnordeste.domain.entity.Usuario;
@@ -15,6 +16,16 @@ public class ClienteMapper {
                 .dataNascimento(dto.dataNascimento())
                 .telefone(dto.telefone())
                 .endereco(dto.endereco())
+                .build();
+    }
+
+    public Cliente toEntity(RegistroRequestDTO request, Usuario usuario) {
+        return Cliente.builder()
+                .usuario(usuario)
+                .dataNascimento(request.dataNascimento())
+                .telefone(request.telefone())
+                .endereco(request.endereco())
+                .statusConsentimento(request.statusConsentimento())
                 .build();
     }
 
