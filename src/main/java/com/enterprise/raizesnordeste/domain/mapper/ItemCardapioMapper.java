@@ -1,6 +1,6 @@
 package com.enterprise.raizesnordeste.domain.mapper;
 
-import com.enterprise.raizesnordeste.domain.dto.request.ItemCardapioRequest;
+import com.enterprise.raizesnordeste.domain.dto.request.ItemCardapioRequestDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ItemCardapioResponseDTO;
 import com.enterprise.raizesnordeste.domain.entity.Cardapio;
 import com.enterprise.raizesnordeste.domain.entity.Item;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ItemCardapioMapper {
 
-    public ItemCardapio toItemCardapio(ItemCardapioRequest request, Item item, Cardapio cardapio) {
+    public ItemCardapio toItemCardapio(ItemCardapioRequestDTO request, Item item, Cardapio cardapio) {
         return ItemCardapio.builder()
                 .item(item)
                 .cardapio(cardapio)

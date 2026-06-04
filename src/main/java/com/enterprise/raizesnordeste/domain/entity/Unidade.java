@@ -5,6 +5,7 @@ import com.enterprise.raizesnordeste.domain.enuns.Regiao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.Audited;
 import jakarta.persistence.Id;
 
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 @Audited
 @Getter
 @Setter
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

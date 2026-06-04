@@ -13,4 +13,5 @@ import java.util.List;
 public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long>, JpaSpecificationExecutor<ItemPedido> {
 
     Page<ItemPedido> findAllByPedidoId(Long pedidoId, Pageable pageable);
+    List<ItemPedido> findAllByPedidoUnidadeId(Long unidadeId);
 }

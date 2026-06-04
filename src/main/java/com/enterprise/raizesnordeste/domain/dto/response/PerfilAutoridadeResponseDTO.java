@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record PerfilAutoridadeResponseDTO(
+        Long id,
         String nome,
         String descricao,
         LocalDateTime createdAt,

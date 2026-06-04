@@ -2,6 +2,7 @@ package com.enterprise.raizesnordeste.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.Audited;
 import jakarta.persistence.Id;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 @Audited
 @Getter
 @Setter
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,4 +32,8 @@ public class ItemCardapio extends AuditableEntity {
     @Column(nullable = false)
     @Builder.Default
     private Boolean disponivel = true;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean ativo = true;
 }
