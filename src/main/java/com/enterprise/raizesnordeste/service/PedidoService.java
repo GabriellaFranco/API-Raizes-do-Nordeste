@@ -17,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,15 @@ public class PedidoService {
         var unidade = buscarUnidade(request.idUnidade());
 
         Cliente cliente = null;
-        if (request.idCliente() != null) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var email = authentication.getName();
+
+        var isCliente = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
+
+        if (isCliente) {
+            cliente = clienteRepository.findByUsuarioEmail(email).orElse(null);
+        } else if (request.idCliente() != null) {
             cliente = clienteRepository.findById(request.idCliente())
                     .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado: " + request.idCliente()));
         }
@@ -170,6 +179,10 @@ public class PedidoService {
 
         pedido.setStatus(StatusPedido.CANCELADO);
         pedidoRepository.save(pedido);
+    }
+
+    public Page<PedidoResponseDTO> getPedidosByCliente(Long idCliente, Pageable pageable) {
+        return pedidoRepository.findAllByClienteId(idCliente, pageable).map(pedidoMapper::toPedidoResponseDTO);
     }
 
     private Pedido buscarPedido(Long id) {
