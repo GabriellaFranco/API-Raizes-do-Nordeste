@@ -15,8 +15,5 @@ public record ClienteRequestDTO(
         @Pattern(regexp = "\\d{10,11}", message = "O telefone informado deve conter entre 10 e 11 dígitos numéricos")
         String telefone,
 
-        String endereco,
-
-        @NotNull(message = "O consentimento para armazenamento de dados é obrigatório")
-        Boolean statusConsentimento
+        String endereco
 ) {}
