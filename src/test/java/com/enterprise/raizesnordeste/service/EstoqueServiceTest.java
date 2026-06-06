@@ -148,8 +148,7 @@ class EstoqueServiceTest {
     void listarAbaixoDoMinimo_deveRetornarItensCriticos() {
         estoque.setQuantidade(0);
         when(unidadeRepository.findById(1L)).thenReturn(Optional.of(unidade));
-        when(estoqueRepository.findAllByUnidadeIdAndQuantidadeLessThanEqual(1L, 0))
-                .thenReturn(List.of(estoque));
+        when(estoqueRepository.findEstoqueCritico(1L)).thenReturn(List.of(estoque));
         when(estoqueMapper.toEstoqueResponseDTO(any())).thenReturn(estoqueResponse);
 
         var result = estoqueService.getAllAbaixoDoMinimo(1L);

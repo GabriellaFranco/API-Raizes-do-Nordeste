@@ -1,6 +1,7 @@
 package com.enterprise.raizesnordeste.service;
 
 import com.enterprise.raizesnordeste.domain.dto.request.ClienteRequestDTO;
+import com.enterprise.raizesnordeste.domain.dto.request.UpdateClienteDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ClienteResponseDTO;
 import com.enterprise.raizesnordeste.domain.entity.Cliente;
 import com.enterprise.raizesnordeste.domain.entity.Usuario;
@@ -41,6 +42,7 @@ class ClienteServiceTest {
     private Usuario usuario;
     private ClienteResponseDTO clienteResponse;
     private ClienteRequestDTO clienteRequest;
+    private UpdateClienteDTO updateRequest;
 
     @BeforeEach
     void setUp() {
@@ -75,6 +77,8 @@ class ClienteServiceTest {
                 "47988888888",
                 "Rua Nova, 456"
         );
+
+        updateRequest = new UpdateClienteDTO("4790005432", "Rua velha 123");
     }
 
     @Test
@@ -122,7 +126,7 @@ class ClienteServiceTest {
         when(clienteRepository.save(any())).thenReturn(cliente);
         when(clienteMapper.toClienteResponseDTO(any())).thenReturn(clienteResponse);
 
-        var result = clienteService.updateCliente(1L, clienteRequest);
+        var result = clienteService.updateCliente(1L, updateRequest);
 
         assertNotNull(result);
         verify(clienteRepository).save(any());
@@ -134,7 +138,7 @@ class ClienteServiceTest {
         when(clienteRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
-                () -> clienteService.updateCliente(99L, clienteRequest));
+                () -> clienteService.updateCliente(99L, updateRequest));
 
         verify(clienteRepository, never()).save(any());
     }
@@ -151,7 +155,7 @@ class ClienteServiceTest {
         assertTrue(cliente.getAnonimizado());
         assertNotNull(cliente.getDataRevogacao());
         assertEquals("Usuário Anonimizado", cliente.getUsuario().getNome());
-        assertEquals("00000000000", cliente.getUsuario().getCpf());
+        assertEquals("ANON0000001", cliente.getUsuario().getCpf());
         assertNull(cliente.getTelefone());
         assertNull(cliente.getEndereco());
         assertNull(cliente.getDataNascimento());

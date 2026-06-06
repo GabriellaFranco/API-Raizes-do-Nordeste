@@ -10,7 +10,10 @@ import com.enterprise.raizesnordeste.domain.mapper.EstoqueMapper;
 import com.enterprise.raizesnordeste.domain.mapper.MovimentacaoEstoqueMapper;
 import com.enterprise.raizesnordeste.exception.BusinessException;
 import com.enterprise.raizesnordeste.exception.ResourceNotFoundException;
-import com.enterprise.raizesnordeste.repository.*;
+import com.enterprise.raizesnordeste.repository.EstoqueRepository;
+import com.enterprise.raizesnordeste.repository.MovimentacaoEstoqueRepository;
+import com.enterprise.raizesnordeste.repository.UnidadeRepository;
+import com.enterprise.raizesnordeste.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +29,6 @@ public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
     private final UnidadeRepository unidadeRepository;
-    private final ItemRepository itemRepository;
     private final MovimentacaoEstoqueRepository movimentacaoEstoqueRepository;
     private final UsuarioRepository usuarioRepository;
     private final EstoqueMapper estoqueMapper;
@@ -43,13 +45,13 @@ public class EstoqueService {
 
     public List<EstoqueResponseDTO> getAllAbaixoDoMinimo(Long idUnidade) {
         buscarUnidade(idUnidade);
-        return estoqueRepository.findAllByUnidadeIdAndQuantidadeLessThanEqual(idUnidade, 0)
+        return estoqueRepository.findEstoqueCritico(idUnidade)
                 .stream().map(estoqueMapper::toEstoqueResponseDTO).toList();
     }
 
     public boolean verificarDisponibilidade(Long idUnidade, Long idItem) {
         return estoqueRepository.findByUnidadeIdAndItemId(idUnidade, idItem).map(estoque
-                        -> estoque.getQuantidade() > 0).orElse(false);
+                -> estoque.getQuantidade() > 0).orElse(false);
     }
 
     @Transactional

@@ -28,7 +28,7 @@ public class ItemPedidoMapper {
 
         return ItemPedidoResponseDTO.builder()
                 .id(itemPedido.getId())
-                .idItem(itemPedido.getItemCardapio().getId())
+                .idItem(itemPedido.getItemCardapio().getItem().getId())
                 .nomeItem(itemPedido.getItemCardapio().getItem().getNome())
                 .quantidade(itemPedido.getQuantidade())
                 .precoUnitario(itemPedido.getPrecoUnitario())

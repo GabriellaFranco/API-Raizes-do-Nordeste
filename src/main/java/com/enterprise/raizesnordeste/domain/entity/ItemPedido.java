@@ -28,7 +28,7 @@ public class ItemPedido extends AuditableEntity {
     private Pedido pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_item", nullable = false)
+    @JoinColumn(name = "id_item_cardapio", nullable = false)
     private ItemCardapio itemCardapio;
 
     @Column(nullable = false)

@@ -43,6 +43,7 @@ class PedidoServiceTest {
     @Mock private PedidoRepository pedidoRepository;
     @Mock private ClienteRepository clienteRepository;
     @Mock private UnidadeRepository unidadeRepository;
+    @Mock private CardapioRepository cardapioRepository;
     @Mock private ItemCardapioRepository itemCardapioRepository;
     @Mock private ItemPedidoRepository itemPedidoRepository;
     @Mock private FidelidadeRepository fidelidadeRepository;
@@ -55,6 +56,7 @@ class PedidoServiceTest {
     private Cliente cliente;
     private Usuario usuario;
     private Item item;
+    private Cardapio cardapio;
     private ItemCardapio itemCardapio;
     private Pedido pedido;
     private Fidelidade fidelidade;
@@ -88,6 +90,12 @@ class PedidoServiceTest {
                 .nome("Cuscuz")
                 .preco(new BigDecimal("15.00"))
                 .status(true)
+                .build();
+
+        cardapio = Cardapio.builder()
+                .id(1L)
+                .unidade(unidade)
+                .ativo(true)
                 .build();
 
         itemCardapio = ItemCardapio.builder()
@@ -189,6 +197,7 @@ class PedidoServiceTest {
                 .build();
 
         when(unidadeRepository.findById(1L)).thenReturn(Optional.of(unidade));
+        when(cardapioRepository.findByUnidadeIdAndAtivoTrue(1L)).thenReturn(Optional.of(cardapio));
         when(itemCardapioRepository.findByCardapioIdAndItemId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(itemCardapio));
         when(pedidoMapper.toPedido(any(), any(), any())).thenReturn(pedido);
@@ -217,6 +226,7 @@ class PedidoServiceTest {
         when(authentication.getName()).thenReturn("atendente@email.com");
 
         when(unidadeRepository.findById(1L)).thenReturn(Optional.of(unidade));
+        when(cardapioRepository.findByUnidadeIdAndAtivoTrue(1L)).thenReturn(Optional.of(cardapio));
         when(clienteRepository.findById(1L)).thenReturn(Optional.of(cliente));
         when(pedidoMapper.toPedido(any(), any(), any())).thenReturn(pedido);
         when(itemCardapioRepository.findByCardapioIdAndItemId(anyLong(), anyLong()))
@@ -264,13 +274,13 @@ class PedidoServiceTest {
                 .build();
 
         when(unidadeRepository.findById(1L)).thenReturn(Optional.of(unidade));
+        when(cardapioRepository.findByUnidadeIdAndAtivoTrue(1L)).thenReturn(Optional.of(cardapio));
         when(clienteRepository.findByUsuarioEmail(anyString())).thenReturn(Optional.of(cliente));
         when(pedidoMapper.toPedido(any(), any(), any())).thenReturn(pedido);
         when(itemCardapioRepository.findByCardapioIdAndItemId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(itemCardapio));
         when(itemPedidoMapper.toItemPedido(any(), any(), any())).thenReturn(itemPedido);
         when(fidelidadeRepository.findByClienteId(anyLong())).thenReturn(Optional.of(fidelidade));
-        doNothing().when(estoqueService).decrementarEstoquePorPedidoRealizado(anyLong(), anyLong(), anyInt());
 
         assertThrows(BusinessException.class,
                 () -> pedidoService.createPedido(requestComPontos));
