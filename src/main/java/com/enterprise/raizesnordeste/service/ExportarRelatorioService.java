@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -22,10 +23,13 @@ import java.util.Map;
 public class ExportarRelatorioService {
 
     private final RelatorioService relatorioService;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public byte[] exportarVendasPorUnidade(Long idUnidade, LocalDateTime inicio, LocalDateTime fim) {
-        var dados = relatorioService.vendasPorUnidade(idUnidade, inicio, fim);
+    public byte[] exportarVendasPorUnidade(Long idUnidade, LocalDate inicio, LocalDate fim) {
+        LocalDateTime inicioDateTime = inicio.atStartOfDay();
+        LocalDateTime fimDateTime = fim.atTime(23, 59, 59);
+
+        var dados = relatorioService.vendasPorUnidade(idUnidade, inicioDateTime, fimDateTime);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             var writer = new PdfWriter(baos);
@@ -51,8 +55,11 @@ public class ExportarRelatorioService {
         }
     }
 
-    public byte[] exportarConsolidado(LocalDateTime inicio, LocalDateTime fim) {
-        var dados = relatorioService.consolidado(inicio, fim);
+    public byte[] exportarConsolidado(LocalDate inicio, LocalDate fim) {
+        LocalDateTime inicioDateTime = inicio.atStartOfDay();
+        LocalDateTime fimDateTime = fim.atTime(23, 59, 59);
+
+        var dados = relatorioService.consolidado(inicioDateTime, fimDateTime);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             var writer = new PdfWriter(baos);

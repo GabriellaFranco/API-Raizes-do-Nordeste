@@ -36,8 +36,9 @@ public class Unidade extends AuditableEntity {
     @Column(nullable = false, length = 100)
     private String contato;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "Estado é obrigatório")
-    Estado estado;
+    private Estado estado;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

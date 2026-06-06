@@ -12,7 +12,7 @@ import org.hibernate.envers.Audited;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "perfil_autoridade")
+@Table(name = "tb_perfil_autoridade")
 public class PerfilAutoridade extends AuditableEntity {
 
     @Id
@@ -26,5 +26,5 @@ public class PerfilAutoridade extends AuditableEntity {
     private String descricao;
 
     @Builder.Default
-    boolean status = true;
+    private boolean status = true;
 }

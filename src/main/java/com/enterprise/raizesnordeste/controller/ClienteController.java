@@ -1,6 +1,6 @@
 package com.enterprise.raizesnordeste.controller;
 
-import com.enterprise.raizesnordeste.domain.dto.request.ClienteRequestDTO;
+import com.enterprise.raizesnordeste.domain.dto.request.UpdateClienteDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ClienteResponseDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.PedidoResponseDTO;
 import com.enterprise.raizesnordeste.service.ClienteService;
@@ -71,7 +71,7 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
             @ApiResponse(responseCode = "403", description = "Acesso negado")
     })
-    public ResponseEntity<ClienteResponseDTO> atualizarCliente(@PathVariable Long id, @RequestBody @Valid ClienteRequestDTO request) {
+    public ResponseEntity<ClienteResponseDTO> atualizarCliente(@PathVariable Long id, @RequestBody @Valid UpdateClienteDTO request) {
         return ResponseEntity.ok(clienteService.updateCliente(id, request));
     }
 

@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -59,9 +58,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Page<UsuarioResponseDTO>> listarPorUnidade(@PathVariable Long idUnidade, Pageable pageable) {
-        var usuarios = usuarioService.getAll(pageable);
+        var usuarios = usuarioService.getAllByUnidade(idUnidade, pageable);
         return usuarios.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(usuarios);
     }
+
 
     @PostMapping
     @PreAuthorize("hasAnyRole('GERENTE', 'MATRIZ')")
@@ -74,7 +74,7 @@ public class UsuarioController {
     })
     public ResponseEntity<UsuarioResponseDTO> criarUsuario(@RequestBody @Valid UsuarioRequestDTO request) {
         var usuario = usuarioService.createUsuario(request);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(usuario.id()).toUri();
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.id()).toUri();
         return ResponseEntity.created(uri).body(usuario);
     }
 
@@ -90,7 +90,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.updateUsuario(id, request));
     }
 
-    @PostMapping("/{id}/perfis")
+    @PostMapping("/{id}/perfis/{idPerfil}")
     @PreAuthorize("hasRole('MATRIZ')")
     @Operation(summary = "Vincular perfil", description = "Vincula um perfil de autoridade a um usuário")
     @ApiResponses({
@@ -98,8 +98,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Usuário ou perfil não encontrado"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
-    public ResponseEntity<Void> vincularPerfil(@PathVariable Long idUsuario, @PathVariable Long idPerfil) {
-        usuarioService.vincularPerfilAutoridade(idUsuario, idPerfil);
+    public ResponseEntity<Void> vincularPerfil(@PathVariable Long id, @PathVariable Long idPerfil) {
+        usuarioService.vincularPerfilAutoridade(id, idPerfil);
         return ResponseEntity.noContent().build();
     }
 
@@ -111,8 +111,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Usuário ou perfil não encontrado"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
-    public ResponseEntity<Void> desvincularPerfil(@PathVariable Long idUsuario, @PathVariable Long idPerfil) {
-        usuarioService.desvincularPerfil(idUsuario, idPerfil);
+    public ResponseEntity<Void> desvincularPerfil(@PathVariable Long id, @PathVariable Long idPerfil) {
+        usuarioService.desvincularPerfil(id, idPerfil);
         return ResponseEntity.noContent().build();
     }
 

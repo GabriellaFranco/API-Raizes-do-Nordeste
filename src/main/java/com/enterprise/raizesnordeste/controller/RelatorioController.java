@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,8 @@ public class RelatorioController {
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Map<String, Object>> vendasPorUnidade(@PathVariable Long idUnidade,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
+                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
 
         return ResponseEntity.ok(relatorioService.vendasPorUnidade(idUnidade, inicio, fim));
     }
@@ -51,8 +52,8 @@ public class RelatorioController {
     })
     public ResponseEntity<byte[]> exportarVendasPorUnidade(
             @PathVariable Long idUnidade,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
         byte[] pdf = relatorioExportService.exportarVendasPorUnidade(idUnidade, inicio, fim);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=vendas_unidade_" + idUnidade + ".pdf")
@@ -81,8 +82,8 @@ public class RelatorioController {
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<byte[]> exportarConsolidado(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
         byte[] pdf = relatorioExportService.exportarConsolidado(inicio, fim);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=consolidado.pdf")

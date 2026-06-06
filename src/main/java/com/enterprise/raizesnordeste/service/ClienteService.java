@@ -1,6 +1,6 @@
 package com.enterprise.raizesnordeste.service;
 
-import com.enterprise.raizesnordeste.domain.dto.request.ClienteRequestDTO;
+import com.enterprise.raizesnordeste.domain.dto.request.UpdateClienteDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ClienteResponseDTO;
 import com.enterprise.raizesnordeste.domain.entity.Cliente;
 import com.enterprise.raizesnordeste.domain.mapper.ClienteMapper;
@@ -31,10 +31,9 @@ public class ClienteService {
     }
 
     @Transactional
-    public ClienteResponseDTO updateCliente(Long id, ClienteRequestDTO request) {
+    public ClienteResponseDTO updateCliente(Long id, UpdateClienteDTO request) {
         var cliente = buscarCliente(id);
 
-        cliente.setDataNascimento(request.dataNascimento());
         cliente.setTelefone(request.telefone());
         cliente.setEndereco(request.endereco());
 
@@ -55,7 +54,7 @@ public class ClienteService {
         cliente.setAnonimizado(true);
         cliente.getUsuario().setNome("Usuário Anonimizado");
         cliente.getUsuario().setEmail("anonimizado_" + cliente.getId() + "@anonimizado.com");
-        cliente.getUsuario().setCpf("00000000000");
+        cliente.getUsuario().setCpf("ANON" + String.format("%07d", cliente.getId()));
         cliente.setTelefone(null);
         cliente.setEndereco(null);
         cliente.setDataNascimento(null);

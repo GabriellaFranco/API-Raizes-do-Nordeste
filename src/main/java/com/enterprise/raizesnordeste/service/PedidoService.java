@@ -3,6 +3,7 @@ package com.enterprise.raizesnordeste.service;
 import com.enterprise.raizesnordeste.domain.dto.request.PedidoRequestDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ItemPedidoResponseDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.PedidoResponseDTO;
+import com.enterprise.raizesnordeste.domain.entity.Cardapio;
 import com.enterprise.raizesnordeste.domain.entity.Cliente;
 import com.enterprise.raizesnordeste.domain.entity.ItemPedido;
 import com.enterprise.raizesnordeste.domain.entity.Pedido;
@@ -13,7 +14,6 @@ import com.enterprise.raizesnordeste.domain.mapper.PedidoMapper;
 import com.enterprise.raizesnordeste.exception.BusinessException;
 import com.enterprise.raizesnordeste.exception.ResourceNotFoundException;
 import com.enterprise.raizesnordeste.repository.*;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +31,7 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
     private final UnidadeRepository unidadeRepository;
+    private final CardapioRepository cardapioRepository;
     private final ItemCardapioRepository itemCardapioRepository;
     private final ItemPedidoRepository itemPedidoRepository;
     private final FidelidadeRepository fidelidadeRepository;
@@ -57,6 +58,10 @@ public class PedidoService {
     public PedidoResponseDTO createPedido(PedidoRequestDTO request) {
         var unidade = buscarUnidade(request.idUnidade());
 
+        var cardapio = cardapioRepository.findByUnidadeIdAndAtivoTrue(unidade.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Cardápio ativo não encontrado para a unidade: " + unidade.getId()));
+
         Cliente cliente = null;
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var email = authentication.getName();
@@ -73,20 +78,21 @@ public class PedidoService {
 
         var pedido = pedidoMapper.toPedido(request, cliente, unidade);
 
-        BigDecimal valorTotal = BigDecimal.ZERO;
+        final Cardapio cardapioFinal = cardapio;
         List<ItemPedido> itensPedido = request.itens().stream().map(itemRequest -> {
-            var itemCardapio = itemCardapioRepository.findByCardapioIdAndItemId(unidade.getId(), itemRequest.idItem())
-                    .orElseThrow(() -> new ResourceNotFoundException("Item não encontrado no cardápio: " + itemRequest.idItem()));
+            var itemCardapio = itemCardapioRepository
+                    .findByCardapioIdAndItemId(cardapioFinal.getId(), itemRequest.idItem())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Item não encontrado no cardápio: " + itemRequest.idItem()));
 
             if (!itemCardapio.getDisponivel()) {
                 throw new BusinessException("Item indisponível: " + itemCardapio.getItem().getNome());
             }
 
-            estoqueService.decrementarEstoquePorPedidoRealizado(unidade.getId(), itemCardapio.getItem().getId(),itemRequest.quantidade());
-
             return itemPedidoMapper.toItemPedido(itemRequest, pedido, itemCardapio);
         }).toList();
 
+        BigDecimal valorTotal = BigDecimal.ZERO;
         for (ItemPedido item : itensPedido) {
             valorTotal = valorTotal.add(
                     item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade()))
@@ -117,7 +123,16 @@ public class PedidoService {
 
         pedido.setValorTotal(valorTotal);
         pedido.setItens(itensPedido);
+
         pagamentoMockService.processarPagamento(request.meioPagamento(), valorTotal);
+
+        itensPedido.forEach(item ->
+                estoqueService.decrementarEstoquePorPedidoRealizado(
+                        unidade.getId(),
+                        item.getItemCardapio().getItem().getId(),
+                        item.getQuantidade()
+                )
+        );
         pedidoRepository.save(pedido);
 
         if (cliente != null) {
@@ -172,6 +187,16 @@ public class PedidoService {
                     .ifPresent(fidelidade -> {
                         fidelidade.setPontosAcumulados(
                                 fidelidade.getPontosAcumulados() + pedido.getPontosUtilizados()
+                        );
+                        fidelidadeRepository.save(fidelidade);
+                    });
+        }
+
+        if (pedido.getCliente() != null) {
+            fidelidadeRepository.findByClienteId(pedido.getCliente().getId())
+                    .ifPresent(fidelidade -> {
+                        fidelidade.setTotalGasto(
+                                fidelidade.getTotalGasto().subtract(pedido.getValorTotal()).max(BigDecimal.ZERO)
                         );
                         fidelidadeRepository.save(fidelidade);
                     });
