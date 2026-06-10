@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,11 +34,14 @@ public class RelatorioController {
             @ApiResponse(responseCode = "404", description = "Unidade não encontrada"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
-    public ResponseEntity<Map<String, Object>> vendasPorUnidade(@PathVariable Long idUnidade,
-                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime inicio,
-                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime fim) {
-
-        return ResponseEntity.ok(relatorioService.vendasPorUnidade(idUnidade, inicio, fim));
+    public ResponseEntity<Map<String, Object>> vendasPorUnidade(
+            @PathVariable Long idUnidade,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+        return ResponseEntity.ok(relatorioService.vendasPorUnidade(
+                idUnidade,
+                inicio.atStartOfDay(),
+                fim.atTime(23, 59, 59)));
     }
 
     @GetMapping("/vendas/unidade/{idUnidade}/export")
@@ -69,9 +71,11 @@ public class RelatorioController {
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Map<String, Object>> consolidado(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime fim) {
-        return ResponseEntity.ok(relatorioService.consolidado(inicio, fim));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+        return ResponseEntity.ok(relatorioService.consolidado(
+                inicio.atStartOfDay(),
+                fim.atTime(23, 59, 59)));
     }
 
     @GetMapping("/consolidado/export")
@@ -99,7 +103,9 @@ public class RelatorioController {
             @ApiResponse(responseCode = "404", description = "Unidade não encontrada"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
-    public ResponseEntity<List<Map<String, Object>>> produtosMaisVendidos(@PathVariable Long idUnidade, @RequestParam(defaultValue = "10") int limite) {
+    public ResponseEntity<List<Map<String, Object>>> produtosMaisVendidos(
+            @PathVariable Long idUnidade,
+            @RequestParam(defaultValue = "10") int limite) {
         var produtos = relatorioService.produtosMaisVendidos(idUnidade, limite);
         return produtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(produtos);
     }
