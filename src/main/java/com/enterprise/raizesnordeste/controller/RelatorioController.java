@@ -36,8 +36,8 @@ public class RelatorioController {
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Map<String, Object>> vendasPorUnidade(@PathVariable Long idUnidade,
-                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
-                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime inicio,
+                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime fim) {
 
         return ResponseEntity.ok(relatorioService.vendasPorUnidade(idUnidade, inicio, fim));
     }
@@ -69,8 +69,8 @@ public class RelatorioController {
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Map<String, Object>> consolidado(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime fim) {
         return ResponseEntity.ok(relatorioService.consolidado(inicio, fim));
     }
 
