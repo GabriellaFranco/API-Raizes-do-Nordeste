@@ -8,6 +8,7 @@ import com.enterprise.raizesnordeste.domain.entity.Cliente;
 import com.enterprise.raizesnordeste.domain.entity.ItemPedido;
 import com.enterprise.raizesnordeste.domain.entity.Pedido;
 import com.enterprise.raizesnordeste.domain.entity.Unidade;
+import com.enterprise.raizesnordeste.domain.enuns.CanalPedido;
 import com.enterprise.raizesnordeste.domain.enuns.StatusPedido;
 import com.enterprise.raizesnordeste.domain.mapper.ItemPedidoMapper;
 import com.enterprise.raizesnordeste.domain.mapper.PedidoMapper;
@@ -208,6 +209,10 @@ public class PedidoService {
 
     public Page<PedidoResponseDTO> getPedidosByCliente(Long idCliente, Pageable pageable) {
         return pedidoRepository.findAllByClienteId(idCliente, pageable).map(pedidoMapper::toPedidoResponseDTO);
+    }
+
+    public Page<PedidoResponseDTO> getAllByCanalPedido(CanalPedido canalPedido, Pageable pageable) {
+        return pedidoRepository.findAllByCanal(canalPedido, pageable).map(pedidoMapper::toPedidoResponseDTO);
     }
 
     private Pedido buscarPedido(Long id) {

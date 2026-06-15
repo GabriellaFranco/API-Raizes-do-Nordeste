@@ -32,6 +32,7 @@ public class EstoqueController {
     @Operation(summary = "Listar estoque", description = "Retorna o estoque completo de uma unidade paginado")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "404", description = "Unidade não encontrada"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })

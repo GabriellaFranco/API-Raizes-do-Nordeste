@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ItemController {
 
     private final ItemService itemService;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('GERENTE', 'MATRIZ')")
+    @Operation(summary = "Listar todos os itens", description = "Lista todos os itens")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
+    })
+    public ResponseEntity<Page<ItemResponseDTO>> getAllItens(Pageable pageable) {
+        var itens = itemService.getAllItens(pageable);
+        return itens.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(itens);
+    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('GERENTE', 'MATRIZ')")

@@ -30,6 +30,7 @@ public class ItemCardapioController {
     @Operation(summary = "Listar itens do cardápio", description = "Retorna todos os itens de um cardápio paginados")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "404", description = "Cardápio não encontrado")
     })
     public ResponseEntity<Page<ItemCardapioResponseDTO>> listarItensDoCardapio(@PathVariable Long idCardapio, Pageable pageable) {

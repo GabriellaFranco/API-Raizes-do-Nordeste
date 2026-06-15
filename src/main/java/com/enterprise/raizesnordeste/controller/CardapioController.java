@@ -27,7 +27,8 @@ public class CardapioController {
     @GetMapping
     @Operation(summary = "Listar cardápios", description = "Retorna todos os cardápios paginados")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
     })
     public ResponseEntity<Page<CardapioResponseDTO>> listarCardapios(Pageable pageable) {
         var cardapios = cardapioService.getAll(pageable);

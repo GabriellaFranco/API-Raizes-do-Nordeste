@@ -30,6 +30,7 @@ public class UsuarioController {
     @Operation(summary = "Listar usuários", description = "Retorna todos os usuários paginados")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Page<UsuarioResponseDTO>> listarUsuarios(Pageable pageable) {

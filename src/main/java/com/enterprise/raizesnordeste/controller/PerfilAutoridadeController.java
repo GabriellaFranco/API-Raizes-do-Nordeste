@@ -29,6 +29,7 @@ public class PerfilAutoridadeController {
     @Operation(summary = "Listar perfis", description = "Retorna todos os perfis de autoridade paginados")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Page<PerfilAutoridadeResponseDTO>> listar(Pageable pageable) {
