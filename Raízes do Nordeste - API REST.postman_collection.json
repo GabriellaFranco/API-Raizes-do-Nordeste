@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "5b5fde74-75ef-4a44-80d2-df8c0f4eda5d",
 		"name": "Raízes do Nordeste - API REST",
-		"description": "Coleção de testes da API REST - Raízes do Nordeste  \nProjeto Multidisciplinar UNINTER 2026 - Gabriella Luisa Franco - RU: 4703557\n\nORDEM DE EXECUÇÃO SUGERIDA:\n\n1. Auth (T01-T06) → configura tokens automaticamente\n    \n2. Autorização (T07-T08)\n    \n3. Pedidos (T09-T13)\n    \n4. Estoque (T14-T16)\n    \n5. Fidelidade (T17)\n    \n6. LGPD (T18-T19)\n    \n7. Auditoria (T20)\n    \n\n\\-- ============================================================  \n\\-- Pré-requisito: Docker rodando (docker compose up -d)  \n\\-- ============================================================",
+		"description": "Coleção de testes da API REST - Raízes do Nordeste  \nProjeto Multidisciplinar UNINTER 2026 - Gabriella Luisa Franco - RU: 4703557\n\nORDEM DE EXECUÇÃO SUGERIDA:\n\n1. Auth (T01-T06) → configura tokens automaticamente\n    \n2. Autorização (T07-T08)\n    \n3. Pedidos (T09-T13)\n    \n4. Estoque (T14-T16)\n    \n5. Fidelidade (T17)\n    \n6. LGPD (T18-T19)\n\n\n\\-- ============================================================  \n\\-- Pré-requisito: Docker rodando (docker compose up -d)  \n\\-- ============================================================",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "40052419"
 	},
@@ -921,53 +921,6 @@
 				}
 			],
 			"description": "Conformidade com a LGPD | T18-T19"
-		},
-		{
-			"name": "Auditoria",
-			"item": [
-				{
-					"name": "T20 - Consultar registros de auditoria de login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"pm.test('[T20] Status 200 - Auditoria acessível', function() { pm.response.to.have.status(200); });",
-									"pm.test('[T20] Registros de login presentes', function() {",
-									"    var json = pm.response.json();",
-									"    pm.expect(json).to.be.an('array');",
-									"    pm.expect(json.length).to.be.above(0);",
-									"    console.log('Registros de auditoria encontrados:', json.length);",
-									"});"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/auditoria-login",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"auditoria-login"
-							]
-						},
-						"description": "T20 | POSITIVO | Consulta de registros de auditoria de tentativas de login.\nPré-condição: token GERENTE, logins realizados nos testes anteriores.\nNOTA: Pode retornar 403 se endpoint exigir perfil MATRIZ.\nEsperado: 200 + array com registros de login"
-					},
-					"response": []
-				}
-			],
-			"description": "Auditoria de operações | T20"
 		}
 	],
 	"variable": [
