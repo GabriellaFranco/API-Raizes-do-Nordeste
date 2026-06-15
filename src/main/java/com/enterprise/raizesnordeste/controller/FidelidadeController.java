@@ -43,6 +43,7 @@ public class FidelidadeController {
     @Operation(summary = "Listar fidelidade", description = "Retorna todos os registros de fidelidade paginados")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Page<FidelidadeResponseDTO>> listarFidelidades(Pageable pageable) {

@@ -8,8 +8,12 @@ import com.enterprise.raizesnordeste.exception.BusinessException;
 import com.enterprise.raizesnordeste.exception.ResourceNotFoundException;
 import com.enterprise.raizesnordeste.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -17,6 +21,10 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
+
+    public Page<ItemResponseDTO> getAllItens(Pageable pageable) {
+        return itemRepository.findAll(pageable).map(itemMapper::toItemResponseDTO);
+    }
 
     public ItemResponseDTO getItemById(Long id) {
         return itemMapper.toItemResponseDTO(buscarItem(id));

@@ -29,6 +29,7 @@ public class UnidadeController {
     @Operation(summary = "Listar unidades", description = "Retorna todas as unidades paginadas")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
     public ResponseEntity<Page<UnidadeResponseDTO>> listarUnidades(Pageable pageable) {

@@ -3,6 +3,7 @@ package com.enterprise.raizesnordeste.controller;
 import com.enterprise.raizesnordeste.domain.dto.request.PedidoRequestDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.ItemPedidoResponseDTO;
 import com.enterprise.raizesnordeste.domain.dto.response.PedidoResponseDTO;
+import com.enterprise.raizesnordeste.domain.enuns.CanalPedido;
 import com.enterprise.raizesnordeste.domain.enuns.StatusPedido;
 import com.enterprise.raizesnordeste.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,11 +32,17 @@ public class PedidoController {
     @Operation(summary = "Listar pedidos", description = "Retorna todos os pedidos paginados")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Lista vazia"),
             @ApiResponse(responseCode = "403", description = "Sem permissão para chamar o endpoint")
     })
-    public ResponseEntity<Page<PedidoResponseDTO>> listarPedidos(Pageable pageable) {
-        var pedidos = pedidoService.getAll(pageable);
-        return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
+    public ResponseEntity<Page<PedidoResponseDTO>> listarPedidos(
+            @RequestParam(required = false) CanalPedido canal,
+            Pageable pageable) {
+
+        if (canal != null) {
+            return ResponseEntity.ok(pedidoService.getAllByCanalPedido(canal, pageable));
+        }
+        return ResponseEntity.ok(pedidoService.getAll(pageable));
     }
 
     @GetMapping("/{id}")
