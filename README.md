@@ -152,7 +152,6 @@ O projeto possui 40 testes unitários cobrindo as principais regras de negócio 
 
 ```bash
 git clone https://github.com/seu-usuario/raizesnordeste.git
-cd raizesnordeste
 ```
 
 #### 2. Configure as variáveis de ambiente
@@ -186,3 +185,47 @@ docker-compose up -d --build
 | PostgreSQL | localhost:5432                                           |
 
 <img width="1919" height="987" alt="image" src="https://github.com/user-attachments/assets/7fe5d7c9-66a2-4615-8683-5f0b7ace82ca" />
+
+## Executando os Testes via Postman
+
+### Pré-requisitos
+- [Postman](https://www.postman.com/downloads/) instalado
+- Docker Desktop em execução
+
+### Passo a Passo
+
+**1. Subir a aplicação**
+```bash
+docker compose up -d
+```
+
+**2. Importar a coleção no Postman**
+- Abra o Postman
+- Clique em **Import**
+- Selecione o arquivo `Raízes do Nordeste - API REST.postman_collection.json` (localizado neste repositório)
+- A coleção aparecerá na barra lateral esquerda
+
+**3. Configurar o ambiente**
+- No canto superior direito, clique em **New Environment**
+- Adicione a variável:
+  - `baseUrl` → `http://localhost:8080/api/v1`
+- Selecione o ambiente criado no seletor do canto superior direito
+
+**4. Executar os testes**
+- Clique nos **três pontinhos** ao lado da coleção
+- Selecione **Run collection**
+- Clique em **Run Raízes do Nordeste - API REST**
+
+**Ordem de execução obrigatória:**
+> Os testes devem ser executados na ordem das pastas (T01 → T20),
+> pois os tokens e IDs são salvos automaticamente entre os testes.
+> O T01 (login) deve sempre ser o primeiro.
+
+### Credenciais de Teste
+| Usuário | E-mail | Senha | Perfil |
+|---|---|---|---|
+| Carlos Eduardo Silva | carlos.silva@raizesnordeste.com | Senha@123 | GERENTE |
+| Maria Teste Postman | maria.postman@email.com | Senha@123 | CLIENTE (criada pelo T04) |
+
+<img width="1918" height="1015" alt="image" src="https://github.com/user-attachments/assets/d4088814-af7f-45f5-8d05-65dca6eb4134" />
+
