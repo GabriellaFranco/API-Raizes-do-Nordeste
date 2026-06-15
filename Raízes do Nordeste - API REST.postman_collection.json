@@ -1,0 +1,1016 @@
+{
+	"info": {
+		"_postman_id": "5b5fde74-75ef-4a44-80d2-df8c0f4eda5d",
+		"name": "Raízes do Nordeste - API REST",
+		"description": "Coleção de testes da API REST - Raízes do Nordeste  \nProjeto Multidisciplinar UNINTER 2026 - Gabriella Luisa Franco - RU: 4703557\n\nORDEM DE EXECUÇÃO SUGERIDA:\n\n1. Auth (T01-T06) → configura tokens automaticamente\n    \n2. Autorização (T07-T08)\n    \n3. Pedidos (T09-T13)\n    \n4. Estoque (T14-T16)\n    \n5. Fidelidade (T17)\n    \n6. LGPD (T18-T19)\n    \n7. Auditoria (T20)\n    \n\n\\-- ============================================================  \n\\-- Pré-requisito: Docker rodando (docker compose up -d)  \n\\-- ============================================================",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40052419"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "T01 - Login GERENTE válido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T01] Status 200', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T01] Token JWT retornado e salvo', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.token).to.be.a('string').and.not.empty;",
+									"    pm.collectionVariables.set('token', json.token);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlos.silva@raizesnordeste.com\",\n  \"senha\": \"Senha@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "T01 | POSITIVO | Login com credenciais válidas do gerente.\nPré-condição: Carlos cadastrado com perfil GERENTE.\nEntrada: {email, senha}\nEsperado: 200 + token JWT + refreshToken"
+					},
+					"response": []
+				},
+				{
+					"name": "T02 - Login senha incorreta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T02] Status 401 - Credenciais inválidas', function() { pm.response.to.have.status(401); });",
+									"pm.test('[T02] Mensagem de erro presente', function() { pm.expect(pm.response.json().message || pm.response.json().status).to.exist; });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlos.silva@raizesnordeste.com\",\n  \"senha\": \"SenhaErrada999\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "T02 | NEGATIVO | Login com senha incorreta.\nEntrada: email válido + senha errada\nEsperado: 401"
+					},
+					"response": []
+				},
+				{
+					"name": "T03 - Login sem campo obrigatório",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T03] Status 400 - Campo obrigatório ausente', function() { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlos.silva@raizesnordeste.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "T03 | NEGATIVO | Login sem campo senha.\nEntrada: {email} (sem senha)\nEsperado: 400"
+					},
+					"response": []
+				},
+				{
+					"name": "T04 - Registro novo cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T04] Status 201 - Cliente registrado', function() { pm.response.to.have.status(201); });",
+									"pm.test('[T04] idCliente salvo', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.idCliente).to.exist;",
+									"    pm.collectionVariables.set('clienteId', String(json.idCliente));",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Maria Teste Postman\",\n  \"email\": \"maria.postman@email.com\",\n  \"cpf\": \"11144477735\",\n  \"senha\": \"Senha@123\",\n  \"statusConsentimento\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/registro",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"registro"
+							]
+						},
+						"description": "T04 | POSITIVO | Registro de novo cliente com consentimento LGPD.\nEntrada: {nome, email, cpf, senha, statusConsentimento: true}\nEsperado: 201 + idCliente + idUsuario"
+					},
+					"response": []
+				},
+				{
+					"name": "T05 - Registro com CPF inválido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T05] Status 400 - CPF inválido', function() { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"CPF Inválido\",\n  \"email\": \"cpfinvalido@email.com\",\n  \"cpf\": \"00000000000\",\n  \"senha\": \"Senha@123\",\n  \"statusConsentimento\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/registro",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"registro"
+							]
+						},
+						"description": "T05 | NEGATIVO | Registro com CPF com dígitos verificadores incorretos.\nEntrada: cpf: '00000000000'\nEsperado: 400"
+					},
+					"response": []
+				},
+				{
+					"name": "T06 - Login CLIENTE (registrado em T04)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T06] Status 200 - Login cliente', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T06] Token cliente salvo', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.token).to.be.a('string').and.not.empty;",
+									"    pm.collectionVariables.set('clienteToken', json.token);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"maria.postman@email.com\",\n  \"senha\": \"Senha@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "T06 | POSITIVO | Login com credenciais do cliente criado em T04.\nEsperado: 200 + token JWT"
+					},
+					"response": []
+				}
+			],
+			"description": "Autenticação e registro | T01-T06"
+		},
+		{
+			"name": "Autorização",
+			"item": [
+				{
+					"name": "T07 - Acesso sem token (401)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T07] Status 401 - Sem token', function() { pm.response.to.have.status(401); });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pedidos"
+							]
+						},
+						"description": "T07 | NEGATIVO | Acesso a rota protegida sem Authorization header.\nEntrada: nenhuma\nEsperado: 401"
+					},
+					"response": []
+				},
+				{
+					"name": "T08 - Perfil CLIENTE em rota GERENTE (403)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T08] Status 403 - Perfil sem permissão', function() { pm.response.to.have.status(403); });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/relatorios/vendas/unidade/1?inicio=2026-01-01&fim=2026-12-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"relatorios",
+								"vendas",
+								"unidade",
+								"1"
+							],
+							"query": [
+								{
+									"key": "inicio",
+									"value": "2026-01-01"
+								},
+								{
+									"key": "fim",
+									"value": "2026-12-31"
+								}
+							]
+						},
+						"description": "T08 | NEGATIVO | Cliente tentando acessar endpoint de relatórios (GERENTE/MATRIZ).\nPré-condição: clienteToken definido (T06).\nEsperado: 403"
+					},
+					"response": []
+				}
+			],
+			"description": "Autorização por token e perfil | T07-T08"
+		},
+		{
+			"name": "Pedidos",
+			"item": [
+				{
+					"name": "T09 - Criar pedido válido (pagamento aprovado)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T09] Status 201 - Pedido criado', function() { pm.response.to.have.status(201); });",
+									"pm.test('[T09] Status CONFIRMADO e pedidoId salvo', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.status).to.equal('CONFIRMADO');",
+									"    pm.expect(json.id).to.exist;",
+									"    pm.collectionVariables.set('pedidoId', String(json.id));",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idUnidade\": 1,\n  \"canal\": \"APP\",\n  \"meioPagamento\": \"PIX\",\n  \"usarPontos\": false,\n  \"itens\": [\n    {\n      \"idItem\": 1,\n      \"quantidade\": 1\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pedidos"
+							]
+						},
+						"description": "T09 | POSITIVO | Criação de pedido com itens válidos - pagamento mock aprovado.\nPré-condição: clienteToken, unidade 1 e item 1 existentes com estoque > 0.\nEntrada: {idUnidade: 1, canal: APP, meioPagamento: PIX, itens: [{idItem:1, quantidade:1}]}\nEsperado: 201 + status CONFIRMADO"
+					},
+					"response": []
+				},
+				{
+					"name": "T10 - Pedido com unidade inexistente (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T10] Status 404 - Unidade não encontrada', function() { pm.response.to.have.status(404); });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idUnidade\": 9999,\n  \"canal\": \"APP\",\n  \"meioPagamento\": \"PIX\",\n  \"usarPontos\": false,\n  \"itens\": [\n    {\n      \"idItem\": 1,\n      \"quantidade\": 1\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pedidos"
+							]
+						},
+						"description": "T10 | NEGATIVO | Pedido para unidade inexistente.\nEntrada: idUnidade: 9999\nEsperado: 404"
+					},
+					"response": []
+				},
+				{
+					"name": "T11 - Pagamento recusado - valor acima do limite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T11] Status 400 - Pagamento recusado', function() { pm.response.to.have.status(400); });",
+									"pm.test('[T11] Mensagem de recusa presente', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.message || json.error).to.exist;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idUnidade\": 1,\n  \"canal\": \"TOTEM\",\n  \"meioPagamento\": \"CARTAO_CREDITO\",\n  \"usarPontos\": false,\n  \"itens\": [\n    {\n      \"idItem\": 1,\n      \"quantidade\": 500\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pedidos"
+							]
+						},
+						"description": "T11 | NEGATIVO | Pagamento mock recusado (500 × R$32,90 = R$16.450 > R$10.000).\nEsperado: 400"
+					},
+					"response": []
+				},
+				{
+					"name": "T12 - Consultar pedido por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T12] Status 200 - Pedido encontrado', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T12] Pedido com dados corretos', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.id).to.exist;",
+									"    pm.expect(json.status).to.exist;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/pedidos/{{pedidoId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pedidos",
+								"{{pedidoId}}"
+							]
+						},
+						"description": "T12 | POSITIVO | Consulta de pedido pelo ID salvo em T09.\nEsperado: 200 + dados do pedido"
+					},
+					"response": []
+				},
+				{
+					"name": "T13 - Atualizar status do pedido para EM_PREPARO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('[T13] Status 200 - Status atualizado', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T13] Novo status é EM_PREPARO', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.status).to.equal('EM_PREPARO');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"EM_PREPARO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pedidos/{{pedidoId}}/status?status=EM_PREPARO",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pedidos",
+								"{{pedidoId}}",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "EM_PREPARO"
+								}
+							]
+						},
+						"description": "T13 | POSITIVO | Gerente atualiza status do pedido para EM_PREPARO.\nPré-condição: token GERENTE, pedidoId definido.\nEsperado: 200 + status EM_PREPARO"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestão de pedidos e pagamento mock | T09-T13"
+		},
+		{
+			"name": "Estoque",
+			"item": [
+				{
+					"name": "T14 - Listar estoque da unidade",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('[T14] Status 200 - Estoque listado', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T14] Response é array', function() { pm.expect(pm.response.json()).to.be.an('array'); });"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/unidades/1/estoque",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"unidades",
+								"1",
+								"estoque"
+							]
+						},
+						"description": "T14 | POSITIVO | Listagem de todo o estoque da unidade 1.\nEsperado: 200 + array de itens"
+					},
+					"response": []
+				},
+				{
+					"name": "T15 - Listar estoque abaixo do mínimo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('[T15] Status 200 - Estoque crítico listado', function() { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/unidades/1/estoque/critico",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"unidades",
+								"1",
+								"estoque",
+								"critico"
+							]
+						},
+						"description": "T15 | POSITIVO | Listagem de itens com quantidade abaixo do mínimo configurado.\nEsperado: 200 + array (pode estar vazio)"
+					},
+					"response": []
+				},
+				{
+					"name": "T16 - Registrar entrada no estoque",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('[T16] Status 200 ou 201 - Entrada registrada', function() { pm.expect([200, 201]).to.include(pm.response.code); });",
+									"pm.test('[T16] Quantidade atualizada', function() { pm.expect(pm.response.json().quantidade).to.exist; });"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstoque\": 1,\n  \"quantidade\": 20,\n  \"observacao\": \"Reposição via teste Postman\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/unidades/1/estoque/entrada",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"unidades",
+								"1",
+								"estoque",
+								"entrada"
+							]
+						},
+						"description": "T16 | POSITIVO | Gerente registra entrada manual no estoque.\nEntrada: {idUnidade: 1, idItem: 1, quantidade: 20}\nEsperado: 200/201 + quantidade atualizada"
+					},
+					"response": []
+				}
+			],
+			"description": "Controle de estoque | T14-T16"
+		},
+		{
+			"name": "Fidelidade",
+			"item": [
+				{
+					"name": "T17 - Consultar pontos de fidelidade do cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T17] Status 200 - Fidelidade consultada', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T17] Pontos acumulados presentes', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.pontosAcumulados).to.not.be.undefined;",
+									"    console.log('Pontos acumulados:', json.pontosAcumulados);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/fidelidade/cliente/{{clienteId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fidelidade",
+								"cliente",
+								"{{clienteId}}"
+							]
+						},
+						"description": "T17 | POSITIVO | Consulta de pontos de fidelidade acumulados pelo cliente.\nPré-condição: clienteId definido, pedido criado em T09.\nEsperado: 200 + pontosAcumulados ≥ 10"
+					},
+					"response": []
+				}
+			],
+			"description": "Programa de fidelidade | T17"
+		},
+		{
+			"name": "LGPD",
+			"item": [
+				{
+					"name": "T18 - Revogar consentimento LGPD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T18] Status 204 - Consentimento revogado', function() { pm.response.to.have.status(204); });"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/clientes/{{clienteId}}/consentimento",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clientes",
+								"{{clienteId}}",
+								"consentimento"
+							]
+						},
+						"description": "T18 | POSITIVO | Cliente revoga consentimento - dados são anonimizados automaticamente.\nPré-condição: clienteToken e clienteId definidos, consentimento ativo.\nEsperado: 204 (sem body)"
+					},
+					"response": []
+				},
+				{
+					"name": "T19 - Revogar consentimento já revogado (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T19] Status 400 - Consentimento já revogado', function() { pm.response.to.have.status(400); });",
+									"pm.test('[T19] Mensagem de erro presente', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.message || json.error).to.exist;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{clienteToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/clientes/{{clienteId}}/consentimento",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clientes",
+								"{{clienteId}}",
+								"consentimento"
+							]
+						},
+						"description": "T19 | NEGATIVO | Tentativa de revogar consentimento já revogado em T18.\nEsperado: 400"
+					},
+					"response": []
+				}
+			],
+			"description": "Conformidade com a LGPD | T18-T19"
+		},
+		{
+			"name": "Auditoria",
+			"item": [
+				{
+					"name": "T20 - Consultar registros de auditoria de login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('[T20] Status 200 - Auditoria acessível', function() { pm.response.to.have.status(200); });",
+									"pm.test('[T20] Registros de login presentes', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json).to.be.an('array');",
+									"    pm.expect(json.length).to.be.above(0);",
+									"    console.log('Registros de auditoria encontrados:', json.length);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auditoria-login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auditoria-login"
+							]
+						},
+						"description": "T20 | POSITIVO | Consulta de registros de auditoria de tentativas de login.\nPré-condição: token GERENTE, logins realizados nos testes anteriores.\nNOTA: Pode retornar 403 se endpoint exigir perfil MATRIZ.\nEsperado: 200 + array com registros de login"
+					},
+					"response": []
+				}
+			],
+			"description": "Auditoria de operações | T20"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": {
+				"content": "Token JWT do GERENTE (Carlos) - preenchido por T01",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "clienteToken",
+			"value": "",
+			"type": "string",
+			"description": {
+				"content": "Token JWT do CLIENTE - preenchido por T06",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "pedidoId",
+			"value": "1",
+			"type": "string",
+			"description": {
+				"content": "ID do pedido - preenchido por T09",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "clienteId",
+			"value": "1",
+			"type": "string",
+			"description": {
+				"content": "ID do cliente - preenchido por T04",
+				"type": "text/plain"
+			}
+		}
+	]
+}
